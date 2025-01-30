@@ -35,6 +35,9 @@ public class Internacao {
 	private String dc_tipo_alta_medica;
 	private String nm_vinculo;
 	private String nm_orgao;
+	private String dt_movimentacao ;
+	private String dthr_alta_medica ;
+	private String informado_por ;
 	public Long getNr_seq() {
 		return nr_seq;
 	}
@@ -227,6 +230,25 @@ public class Internacao {
 	public void setNm_orgao(String nm_orgao) {
 		this.nm_orgao = nm_orgao;
 	}
+	public String getDt_movimentacao() {
+		return dt_movimentacao;
+	}
+	public void setDt_movimentacao(String dt_movimentacao) {
+		this.dt_movimentacao = dt_movimentacao;
+	}
+	public String getDthr_alta_medica() {
+		return dthr_alta_medica;
+	}
+	public void setDthr_alta_medica(String dthr_alta_medica) {
+		this.dthr_alta_medica = dthr_alta_medica;
+	}
+	
+	public String getInformado_por() {
+		return informado_por;
+	}
+	public void setInformado_por(String informado_por) {
+		this.informado_por = informado_por;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -263,6 +285,9 @@ public class Internacao {
 		result = prime * result + ((sg_cid == null) ? 0 : sg_cid.hashCode());
 		result = prime * result + ((st_leito == null) ? 0 : st_leito.hashCode());
 		result = prime * result + ((tx_observacao == null) ? 0 : tx_observacao.hashCode());
+		result = prime * result + ((dt_movimentacao == null) ? 0 : dt_movimentacao.hashCode());
+		result = prime * result + ((dthr_alta_medica == null) ? 0 : dthr_alta_medica.hashCode());
+		result = prime * result + ((informado_por == null) ? 0 : informado_por.hashCode());
 		return result;
 	}
 	@Override
@@ -433,6 +458,23 @@ public class Internacao {
 			if (other.tx_observacao != null)
 				return false;
 		} else if (!tx_observacao.equals(other.tx_observacao))
+			return false;
+		
+		if (dt_movimentacao == null) {
+			if (other.dt_movimentacao != null)
+				return false;
+		} else if (!dt_movimentacao.equals(other.dt_movimentacao))
+			return false;
+		
+		if (dthr_alta_medica == null) {
+			if (other.tx_observacao != null)
+				return false;
+		} else if (!dthr_alta_medica.equals(other.dthr_alta_medica))
+			return false;
+		if (informado_por == null) {
+			if (other.informado_por != null)
+				return false;
+		} else if (!informado_por.equals(other.informado_por))
 			return false;
 		return true;
 	}

@@ -25,18 +25,177 @@ public class InternacaoDto {
 		
 		//String sqlString = "SELECT * FROM agh.v_internacao "; 
 		
-		String sqlString = "SELECT DISTINCT  I.cd_prontuario, I.nm_paciente, I.in_sexo, I.nr_idade, I.nr_quarto, I.nr_leito, nm_ala, nm_clinica, "+
-				"nm_unidade_funcional, nm_acomodacao, st_leito, dt_internacao, dt_entrada_setor, nm_especialidade, " +
-				"nm_medico, dt_ultimo_evento, nm_origem, sg_cid, tx_observacao, nr_convenio, nr_plano, nm_convenio_plano, "+
-				"nr_crm_profissional, nm_carater_internacao, nm_origem_internacao, nr_procedimento, dt_alta_medica, dt_saida_paciente, "+
-				"dc_tipo_alta_medica, p.nm_vinculo , p.nm_orgao "+
-				                "FROM agh.v_internacao as I inner join agh.v_paciente as P on I.cd_prontuario = P.cd_prontuario ";
+		String sqlString = "";
 		
 		if(tipo==1) {
 			
-			sqlString += "WHERE dt_saida_paciente::date between '"+ dt_inicio +"' AND '"+dt_fim+"' ORDER BY dt_saida_paciente";
+			sqlString = "SELECT \r\n"
+					+ "       sub.nr_seq,\r\n"
+					+ "       sub.cd_prontuario,\r\n"
+					+ "       sub.nm_paciente,\r\n"
+					+ "       sub.in_sexo,\r\n"
+					+ "       sub.nr_idade,\r\n"
+					+ "       sub.nr_quarto,\r\n"
+					+ "       sub.nr_leito,\r\n"
+					+ "       sub.nm_ala,\r\n"
+					+ "       sub.nm_clinica,\r\n"
+					+ "       sub.nm_unidade_funcional,\r\n"
+					+ "       sub.nm_acomodacao,\r\n"
+					+ "       sub.st_leito,\r\n"
+					+ "       sub.dt_internacao,\r\n"
+					+ "       sub.dt_entrada_setor,\r\n"
+					+ "       sub.nm_especialidade,\r\n"
+					+ "       sub.nm_medico,\r\n"
+					+ "       sub.dt_ultimo_evento,\r\n"
+					+ "       sub.nm_origem,\r\n"
+					+ "       sub.sg_cid,\r\n"
+					+ "       sub.tx_observacao,\r\n"
+					+ "       sub.nr_convenio,\r\n"
+					+ "       sub.nr_plano,\r\n"
+					+ "       sub.nm_convenio_plano,\r\n"
+					+ "       sub.nr_crm_profissional,\r\n"
+					+ "       sub.nm_carater_internacao,\r\n"
+					+ "       sub.nm_origem_internacao,\r\n"
+					+ "       sub.nr_procedimento,\r\n"
+					+ "       sub.dt_alta_medica,\r\n"
+					+ "       sub.dt_saida_paciente,\r\n"
+					+ "       sub.dc_tipo_alta_medica,\r\n"
+					+ "       sub.nm_vinculo,\r\n"
+					+ "       sub.nm_orgao,\r\n"
+					+ "       sub.dt_movimentacao,\r\n"
+					+ "       sub.dthr_alta_medica,\r\n"
+					+ "       sub.informado_por\r\n"
+					+ "FROM (\r\n"
+					+ "    SELECT \r\n"
+					+ "           I.nr_seq,\r\n"
+					+ "           I.cd_prontuario,\r\n"
+					+ "           I.nm_paciente,\r\n"
+					+ "           I.in_sexo,\r\n"
+					+ "           I.nr_idade,\r\n"
+					+ "           I.nr_quarto,\r\n"
+					+ "           I.nr_leito,\r\n"
+					+ "           I.nm_ala,\r\n"
+					+ "           I.nm_clinica,\r\n"
+					+ "           I.nm_unidade_funcional,\r\n"
+					+ "           I.nm_acomodacao,\r\n"
+					+ "           I.st_leito,\r\n"
+					+ "           I.dt_internacao,\r\n"
+					+ "           I.dt_entrada_setor,\r\n"
+					+ "           I.nm_especialidade,\r\n"
+					+ "           I.nm_medico,\r\n"
+					+ "           I.dt_ultimo_evento,\r\n"
+					+ "           I.nm_origem,\r\n"
+					+ "           I.sg_cid,\r\n"
+					+ "           I.tx_observacao,\r\n"
+					+ "           I.nr_convenio,\r\n"
+					+ "           I.nr_plano,\r\n"
+					+ "           I.nm_convenio_plano,\r\n"
+					+ "           I.nr_crm_profissional,\r\n"
+					+ "           I.nm_carater_internacao,\r\n"
+					+ "           I.nm_origem_internacao,\r\n"
+					+ "           I.nr_procedimento,\r\n"
+					+ "           I.dt_alta_medica,\r\n"
+					+ "           I.dt_saida_paciente,\r\n"
+					+ "           I.dc_tipo_alta_medica,\r\n"
+					+ "           P.nm_vinculo,\r\n"
+					+ "           P.nm_orgao,\r\n"
+					+ "           T.dt_movimentacao,\r\n"
+					+ "           T.dthr_alta_medica,\r\n"
+					+ " 		  T.informado_por,\r\n"
+					+ "           -- This window function ranks rows by dt_movimentacao (descending).\r\n"
+					+ "           ROW_NUMBER() OVER (PARTITION BY I.nr_seq ORDER BY T.dt_movimentacao DESC) AS rn\r\n"
+					+ "    FROM agh.v_internacao      AS I\r\n"
+					+ "    JOIN agh.v_paciente        AS P ON I.cd_prontuario = P.cd_prontuario\r\n"
+					+ "    JOIN agh.v_movimentacao_internacao          AS T ON T.int_seq = I.nr_seq\r\n"
+					+ "    WHERE  I.dt_saida_paciente::date BETWEEN '"+ dt_inicio +"' AND '"+dt_fim+"'\r\n"
+					+ ") AS sub\r\n"
+					+ "WHERE sub.rn = 1  -- Keep only the row with the largest T.dt_movimentacao\r\n"
+					+ "ORDER BY sub.dt_saida_paciente;\r\n"
+					+ "";
 		}else if (tipo==2) {
-			sqlString +=  "WHERE dt_internacao::date between '"+ dt_inicio +"' AND '"+dt_fim+"' ORDER BY dt_internacao";
+			sqlString =  "SELECT \r\n"
+					+ "       sub.nr_seq,\r\n"
+					+ "       sub.cd_prontuario,\r\n"
+					+ "       sub.nm_paciente,\r\n"
+					+ "       sub.in_sexo,\r\n"
+					+ "       sub.nr_idade,\r\n"
+					+ "       sub.nr_quarto,\r\n"
+					+ "       sub.nr_leito,\r\n"
+					+ "       sub.nm_ala,\r\n"
+					+ "       sub.nm_clinica,\r\n"
+					+ "       sub.nm_unidade_funcional,\r\n"
+					+ "       sub.nm_acomodacao,\r\n"
+					+ "       sub.st_leito,\r\n"
+					+ "       sub.dt_internacao,\r\n"
+					+ "       sub.dt_entrada_setor,\r\n"
+					+ "       sub.nm_especialidade,\r\n"
+					+ "       sub.nm_medico,\r\n"
+					+ "       sub.dt_ultimo_evento,\r\n"
+					+ "       sub.nm_origem,\r\n"
+					+ "       sub.sg_cid,\r\n"
+					+ "       sub.tx_observacao,\r\n"
+					+ "       sub.nr_convenio,\r\n"
+					+ "       sub.nr_plano,\r\n"
+					+ "       sub.nm_convenio_plano,\r\n"
+					+ "       sub.nr_crm_profissional,\r\n"
+					+ "       sub.nm_carater_internacao,\r\n"
+					+ "       sub.nm_origem_internacao,\r\n"
+					+ "       sub.nr_procedimento,\r\n"
+					+ "       sub.dt_alta_medica,\r\n"
+					+ "       sub.dt_saida_paciente,\r\n"
+					+ "       sub.dc_tipo_alta_medica,\r\n"
+					+ "       sub.nm_vinculo,\r\n"
+					+ "       sub.nm_orgao,\r\n"
+					+ "       sub.dt_movimentacao,\r\n"
+					+ "       sub.dthr_alta_medica,\r\n"
+					+ "       sub.informado_por\r\n"
+					+ "FROM (\r\n"
+					+ "    SELECT \r\n"
+					+ "           I.nr_seq,\r\n"
+					+ "           I.cd_prontuario,\r\n"
+					+ "           I.nm_paciente,\r\n"
+					+ "           I.in_sexo,\r\n"
+					+ "           I.nr_idade,\r\n"
+					+ "           I.nr_quarto,\r\n"
+					+ "           I.nr_leito,\r\n"
+					+ "           I.nm_ala,\r\n"
+					+ "           I.nm_clinica,\r\n"
+					+ "           I.nm_unidade_funcional,\r\n"
+					+ "           I.nm_acomodacao,\r\n"
+					+ "           I.st_leito,\r\n"
+					+ "           I.dt_internacao,\r\n"
+					+ "           I.dt_entrada_setor,\r\n"
+					+ "           I.nm_especialidade,\r\n"
+					+ "           I.nm_medico,\r\n"
+					+ "           I.dt_ultimo_evento,\r\n"
+					+ "           I.nm_origem,\r\n"
+					+ "           I.sg_cid,\r\n"
+					+ "           I.tx_observacao,\r\n"
+					+ "           I.nr_convenio,\r\n"
+					+ "           I.nr_plano,\r\n"
+					+ "           I.nm_convenio_plano,\r\n"
+					+ "           I.nr_crm_profissional,\r\n"
+					+ "           I.nm_carater_internacao,\r\n"
+					+ "           I.nm_origem_internacao,\r\n"
+					+ "           I.nr_procedimento,\r\n"
+					+ "           I.dt_alta_medica,\r\n"
+					+ "           I.dt_saida_paciente,\r\n"
+					+ "           I.dc_tipo_alta_medica,\r\n"
+					+ "           P.nm_vinculo,\r\n"
+					+ "           P.nm_orgao,\r\n"
+					+ "           T.dt_movimentacao,\r\n"
+					+ "           T.dthr_alta_medica,\r\n"
+					+ "           T.informado_por,\r\n"
+					+ "           -- This window function ranks rows by dt_movimentacao (descending).\r\n"
+					+ "           ROW_NUMBER() OVER (PARTITION BY I.nr_seq ORDER BY T.dt_movimentacao DESC) AS rn\r\n"
+					+ "    FROM agh.v_internacao      AS I\r\n"
+					+ "    JOIN agh.v_paciente        AS P ON I.cd_prontuario = P.cd_prontuario\r\n"
+					+ "    JOIN agh.v_movimentacao_internacao          AS T ON T.int_seq = I.nr_seq\r\n"
+					+ "    WHERE  I.dt_internacao::date BETWEEN '"+ dt_inicio +"' AND '"+dt_fim + "'\r\n"
+					+ ") AS sub\r\n"
+					+ "WHERE sub.rn = 1  -- Keep only the row with the largest T.dt_movimentacao\r\n"
+					+ "ORDER BY sub.dt_internacao;\r\n"
+					+ "";
 		}
 		
 		//String sqlString = "SELECT * FROM agh.v_internacao " +
@@ -54,7 +213,7 @@ public class InternacaoDto {
 			while (resultSet.next()) {
 
 				Internacao internacao = new Internacao();
-
+				internacao.setNr_seq(resultSet.getLong("nr_seq"));
 				internacao.setCd_prontuario(resultSet.getLong("cd_prontuario"));
 				internacao.setNm_paciente(resultSet.getString("nm_paciente"));
 				internacao.setIn_sexo(resultSet.getString("in_sexo"));
@@ -106,11 +265,27 @@ public class InternacaoDto {
 					dt_saida_paciente = dateFormat.format(resultSet.getTimestamp("dt_saida_paciente"));
 					internacao.setDt_saida_paciente(dt_saida_paciente);
 				}
+				
 				internacao.setDc_tipo_alta_medica(resultSet.getString("dc_tipo_alta_medica"));
 				
 				internacao.setNm_vinculo(resultSet.getString("nm_vinculo"));
 				internacao.setNm_orgao(resultSet.getString("nm_orgao"));
-									
+				
+				String dt_movimentacao = resultSet.getString("dt_movimentacao");
+				if (dt_movimentacao == null) {
+					internacao.setDt_movimentacao(dt_movimentacao);
+				} else {
+					dt_movimentacao = dateFormat.format(resultSet.getTimestamp("dt_movimentacao"));
+					internacao.setDt_movimentacao(dt_movimentacao);
+				}
+				String dthr_alta_medica =resultSet.getString("dthr_alta_medica");
+				if (dthr_alta_medica == null) {
+					internacao.setDthr_alta_medica(dthr_alta_medica);
+				} else {
+					dthr_alta_medica = dateFormat.format(resultSet.getTimestamp("dthr_alta_medica"));
+					internacao.setDthr_alta_medica(dthr_alta_medica);
+				}
+				internacao.setInformado_por(resultSet.getString("informado_por"));				
 				internacoes.add(internacao);
 
 			}
